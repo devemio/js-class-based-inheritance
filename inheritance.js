@@ -13,7 +13,7 @@
  * @example Call a parent method.
  * Class.super.parentMethod.apply(this, arguments);
  *
- * @example Using privte variables.
+ * @example Using private variables.
  * var Person = (function() {
  *     // private
  *     var _ = {
