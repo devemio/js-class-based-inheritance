@@ -1,0 +1,2 @@
+Simple classical javascript inheritance
+=======================================
