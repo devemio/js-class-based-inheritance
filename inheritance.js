@@ -52,7 +52,7 @@ var Class = (function () {
             Class.prototype = new F();
 
             // fix the constructor
-            if (Class.prototype.constructor == Object.prototype.constructor) {
+            if (Class.prototype.constructor === Object.prototype.constructor) {
                 Class.prototype.constructor = Class;
             }
 
