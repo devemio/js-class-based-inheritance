@@ -47,6 +47,8 @@
 
         /** @constructor */
         var ClassWrapper = function (parent) {
+            var hasParent = typeof parent !== 'undefined' && parent !== null;
+            
             /** @constructor */
             var Class = function () {
                 // call the function which is used as a constructor
@@ -54,7 +56,7 @@
             }
 
             // inherit
-            if (parent) {
+            if (hasParent) {
                 // basic inherit
                 var F = function () {};
                 F.prototype = parent.prototype;
@@ -95,27 +97,28 @@
             create: function () {
                 var wrapper = null,
                     parent = null,
-                    obj = {};
+                    obj = {},
+                    args = arguments;
 
                 // Class.create(parent|obj)
-                if (arguments.length === 1) {
-                    if (typeof arguments[0] === 'function') {
-                        parent = arguments[0];
-                    } else if (typeof arguments[0] === 'object') {
-                        obj = arguments[0];
+                if (args.length === 1) {
+                    if (typeof args[0] === 'function') {
+                        parent = args[0];
+                    } else if (typeof args[0] === 'object') {
+                        obj = args[0];
                     } else {
                         throw new TypeError('Invalid arguments');
                     }
                 }
 
                 // Class.create(parent, obj)
-                if (arguments.length >= 2) {
-                    if (typeof arguments[0] !== 'function' || typeof arguments[1] !== 'object') {
+                if (args.length >= 2) {
+                    if (typeof args[0] !== 'function' || typeof args[1] !== 'object') {
                         throw new TypeError('Invalid arguments');
                     }
 
-                    parent = arguments[0];
-                    obj = arguments[1];
+                    parent = args[0];
+                    obj = args[1];
                 }
 
                 wrapper = new ClassWrapper(parent);
