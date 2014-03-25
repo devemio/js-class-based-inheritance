@@ -1,11 +1,51 @@
 /**
- * @version 1.0.0
+ * @version 1.0.1
+ * @throws {Error}
  */
 
 (function (Global) {
+    // use strict mode
+    "use strict";
+
     if (typeof Global.Class !== 'undefined') {
         throw new Error("The 'Class' global variable has already been defined");
     }
+
+    /**
+     * Helper.
+     *
+     * @type {object}
+     */
+    var Helper = {
+        /**
+         * Extend function.
+         *
+         * @param {object} destination Destination object.
+         * @param {object} source Source object.
+         * @return {object} Extended object.
+         */
+        extend: function (destination, source) {
+            for (var key in source) {
+                if (source.hasOwnProperty(key)) {
+                    destination[key] = source[key];
+                }
+            }
+            return destination;
+        },
+
+        /**
+         * Proxy function.
+         *
+         * @param {function} f Some function.
+         * @return {function}
+         */
+        proxy: function (f) {
+            var self = this;
+            return (function () {
+                return f.apply(self, arguments);
+            });
+        }
+    };
 
     /**
      * The object which contains methods to create classes.
@@ -42,13 +82,10 @@
      * })();
      */
     Global.Class = (function () {
-        // use strict mode
-        "use strict";
-
         /** @constructor */
         var ClassWrapper = function (parent) {
             var hasParent = typeof parent !== 'undefined' && parent !== null;
-            
+
             /** @constructor */
             var Class = function () {
                 // call the function which is used as a constructor
@@ -87,72 +124,43 @@
              * Create a class.
              * Parameters can be as follows:
              *   - parent is a parent class
-             *   - obj is an object which extends basic functionality
+             *   - props is an object which contains class properties
              *
-             * @param {function|object|null} The parameter can be parent or obj or null. 
-             * @param {object} The parameter is obj.
-             * @return {Class} A function which can be used as a class.
+             * @param {function|object|null} The parameter can be parent or props or null. 
+             * @param {object} The parameter is props.
+             * @return {function} A function which can be used as a class.
              * @throws {TypeError}
              */
             create: function () {
                 var wrapper = null,
                     parent = null,
-                    obj = {},
+                    props = {},
                     args = arguments;
 
-                // Class.create(parent|obj)
+                // Class.create(parent|props)
                 if (args.length === 1) {
                     if (typeof args[0] === 'function') {
                         parent = args[0];
                     } else if (typeof args[0] === 'object') {
-                        obj = args[0];
+                        props = args[0];
                     } else {
                         throw new TypeError('Invalid arguments');
                     }
                 }
 
-                // Class.create(parent, obj)
+                // Class.create(parent, props)
                 if (args.length >= 2) {
                     if (typeof args[0] !== 'function' || typeof args[1] !== 'object') {
                         throw new TypeError('Invalid arguments');
                     }
 
                     parent = args[0];
-                    obj = args[1];
+                    props = args[1];
                 }
 
                 wrapper = new ClassWrapper(parent);
-                this.mixin(wrapper.fn, obj);
+                Helper.extend(wrapper.fn, props);
                 return wrapper;
-            },
-
-            /**
-             * Mixin function.
-             *
-             * @param {object} destination Destination object.
-             * @param {object} props Source object.
-             * @return {object} Mixed object.
-             */
-            mixin: function (destination, props) {
-                for (var key in props) {
-                    if (props.hasOwnProperty(key)) {
-                        destination[key] = props[key];
-                    }
-                }
-                return destination;
-            },
-
-            /**
-             * Proxy function.
-             *
-             * @param {function} f Some function.
-             * @return {function}
-             */
-            proxy: function (f) {
-                var self = this;
-                return (function () {
-                    return f.apply(self, arguments);
-                });
             }
         };
     })();
