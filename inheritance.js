@@ -99,7 +99,7 @@
          * @return {function} inherited class.
          */
         inherit: function (parent, child) {
-            // basic inherit      
+            // inherit      
             child.prototype = Helper.createObject(parent.prototype);
 
             // fix the constructor
