@@ -1,5 +1,5 @@
 /**
- * @version 1.0.1
+ * @version 1.0.2
  * @throws {Error}
  */
 
@@ -44,6 +44,55 @@
             return (function () {
                 return f.apply(self, arguments);
             });
+        },
+
+        /**
+         * Object.create() function.
+         *
+         * @param {object} prototype Object prototype.
+         * @return {object}
+         */
+        createObject: Object.create || function (prototype) {
+            var F = function () {};
+            F.prototype = prototype;
+            return new F();
+        },
+
+        /**
+         * Parse arguments for the Class.create() method.
+         *
+         * @param {object} args Arguments.
+         * @param {ojbect} An object like {parent, props}
+         */
+        parseArgs: function (args) {
+            var parent = null,
+                props = {};
+
+            // Class.create(parent|props)
+            if (args.length === 1) {
+                if (typeof args[0] === 'function') {
+                    parent = args[0];
+                } else if (typeof args[0] === 'object') {
+                    props = args[0];
+                } else {
+                    throw new TypeError('Invalid arguments');
+                }
+            }
+
+            // Class.create(parent, props)
+            if (args.length >= 2) {
+                if (typeof args[0] !== 'function' || typeof args[1] !== 'object') {
+                    throw new TypeError('Invalid arguments');
+                }
+
+                parent = args[0];
+                props = args[1];
+            }
+
+            return {
+                parent: parent,
+                props: props
+            };
         }
     };
 
@@ -94,10 +143,8 @@
 
             // inherit
             if (hasParent) {
-                // basic inherit
-                var F = function () {};
-                F.prototype = parent.prototype;
-                Class.prototype = new F();
+                // basic inherit      
+                Class.prototype = Helper.createObject(parent.prototype);
 
                 // fix the constructor
                 if (Class.prototype.constructor === Object.prototype.constructor) {
@@ -133,33 +180,10 @@
              */
             create: function () {
                 var wrapper = null,
-                    parent = null,
-                    props = {},
-                    args = arguments;
+                    args = Helper.parseArgs(arguments);
 
-                // Class.create(parent|props)
-                if (args.length === 1) {
-                    if (typeof args[0] === 'function') {
-                        parent = args[0];
-                    } else if (typeof args[0] === 'object') {
-                        props = args[0];
-                    } else {
-                        throw new TypeError('Invalid arguments');
-                    }
-                }
-
-                // Class.create(parent, props)
-                if (args.length >= 2) {
-                    if (typeof args[0] !== 'function' || typeof args[1] !== 'object') {
-                        throw new TypeError('Invalid arguments');
-                    }
-
-                    parent = args[0];
-                    props = args[1];
-                }
-
-                wrapper = new ClassWrapper(parent);
-                Helper.extend(wrapper.fn, props);
+                wrapper = new ClassWrapper(args.parent);
+                Helper.extend(wrapper.fn, args.props);
                 return wrapper;
             }
         };
