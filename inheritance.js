@@ -116,37 +116,18 @@
 
     /**
      * The object which contains methods to create classes.
-     *
      * The init() method should be used as a constructor.
      *
      * @type {object}
+     *
      * @example Create a class.
-     * - var Class = Class.create();
-     * - var Class = Class.create(parentClass);
-     * - var Class = Class.create({someVar: 1, someVar2: 2});
-     * - var Class = Class.create(parentClass, {someVar1: 1, someVar2: 2});
+     * - var SomeClass = Class.create();
+     * - var SomeClass = Class.create(parentClass);
+     * - var SomeClass = Class.create({someVar: 1, someVar2: 2});
+     * - var SomeClass = Class.create(parentClass, {someVar1: 1, someVar2: 2});
      *
      * @example Call a parent method.
-     * Class.super.parentMethod.apply(this, arguments);
-     *
-     * @example Using private variables.
-     * var Person = (function() {
-     *     // private
-     *     var _ = {
-     *         // @private
-     *         isPrivateMethod: function() {
-     *             return true;
-     *         }
-     *     };
-     *
-     *     // @public
-     *     return Class.Create({
-     *         // @constructor
-     *         init: function() {
-     *             console.log(_.isPrivateMethod());
-     *         }
-     *     });
-     * })();
+     * - SomeClass.super.parentMethod.apply(this, arguments);
      */
     Global.Class = {
         /** 
