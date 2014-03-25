@@ -103,9 +103,7 @@
             child.prototype = Helper.createObject(parent.prototype);
 
             // fix the constructor
-            if (child.prototype.constructor === Object.prototype.constructor) {
-                child.prototype.constructor = child;
-            }
+            child.prototype.constructor = child;
 
             // keep the superclass reference
             child.super = parent.prototype;
