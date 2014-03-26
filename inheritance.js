@@ -188,9 +188,9 @@
          */
         create: function () {
             var args = Helper.parseArgs(arguments),
-                parent = args.parent || null,
-                props = args.props || null,
-                staticProps = args.staticProps || null;
+                parent = args.parent,
+                props = args.props,
+                staticProps = args.staticProps;
 
             /** @constructor */
             var Class = function () {
