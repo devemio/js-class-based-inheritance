@@ -26,7 +26,6 @@
          * @return {object|function} Extended object.
          */
         extend: function (obj, props, __super) {
-            __super = __super || null;
             for (var name in props) {
                 if (props.hasOwnProperty(name)) {
                     if (__super && this.hasFnSuperCall(props[name]) && this.isFn(obj[name])) {
@@ -196,7 +195,7 @@
             /** @constructor */
             var Class = function () {
                 // call the 'init' function which is used as a constructor
-                this.init && this.init.apply(this, arguments);
+                Helper.isFn(this.init) && this.init.apply(this, arguments);
             }
 
             // set empty constructor
