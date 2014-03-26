@@ -171,6 +171,7 @@
      *
      * @example Call a parent method.
      * - this.super();
+     * - SomeClass.__super.someParentMethod.apply(this, arguments);
      */
     G.Class = {
         /** 
