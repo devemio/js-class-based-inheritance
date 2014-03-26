@@ -40,7 +40,7 @@ Shape.Circle = Class.create(Shape.Base, {
     /** @override */
     init: function () {
         // call parent constructor
-        Shape.Circle.super.init.apply(this, arguments);
+        this.super();
 
         // configure
         this.setName('circle');
