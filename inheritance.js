@@ -1,5 +1,5 @@
 /**
- * @version 0.1.0
+ * @version 1.0.0
  * @throws {Error|TypeError}
  */
 
@@ -7,29 +7,32 @@
     // use strict mode
     "use strict";
 
+    // check the 'Class' global variable
     if (typeof G.Class !== 'undefined') {
         throw new Error("The 'Class' global variable has already been defined");
     }
 
     /**
-     * Helper.
+     * The object which contains helper functions.
      *
      * @type {object}
      */
     var Helper = {
         /**
          * Extend function.
+         * If pass the '__super__' parameter, the function will look for
+         * function which contains parent method call and wrap them.
          *
          * @param {object|function} obj Destination object (e.g. class prototype).
          * @param {object|function} props Source object (e.g. class properties).
-         * @param {object} __super The reference to the parent prototype.
+         * @param {object} __super__ The reference to the parent prototype (optional).
          * @return {object|function} Extended object.
          */
-        extend: function (obj, props, __super) {
+        extend: function (obj, props, __super__) {
             for (var name in props) {
                 if (props.hasOwnProperty(name)) {
-                    if (__super && this.hasFnSuperCall(props[name]) && this.isFn(obj[name])) {
-                        obj[name] = this.wrap(name, props[name], __super);
+                    if (__super__ && this.hasFnSuperCall(props[name]) && this.isFn(obj[name])) {
+                        obj[name] = this.wrap(name, props[name], __super__);
                     } else {
                         obj[name] = props[name];
                     }
@@ -43,15 +46,15 @@
          *
          * @param {string} fnName Function name.
          * @param {function} fn Function.
-         * @param {object} __super The reference to the parent prototype.
+         * @param {object} __super__ The reference to the parent prototype.
          * @return {function}
          */
-        wrap: function (fnName, fn, __super) {
+        wrap: function (fnName, fn, __super__) {
             return function () {
-                var savedSuper = this.super;
-                this.super = __super[fnName];
+                var currentSuperMethod = this.super;
+                this.super = __super__[fnName];
                 var result = fn.apply(this, arguments);
-                this.super = savedSuper;
+                this.super = currentSuperMethod;
                 return result;
             };
         },
@@ -63,7 +66,7 @@
          * @return {object}
          */
         createObject: Object.create || function (prototype) {
-            var F = function () {};
+            var F = function () {}
             F.prototype = prototype;
             return new F();
         },
@@ -116,40 +119,40 @@
         },
 
         /**
-         * Inherit function.
+         * Inherit parent prototype to child prototype and fix child constructor.
          *
          * @param {function} parent Parent class.
          * @param {function} child Child class.
          * @return {function} inherited class.
          */
         inherit: function (parent, child) {
-            // inherit      
+            // inherit
             child.prototype = this.createObject(parent.prototype);
 
             // fix the constructor
             child.prototype.constructor = child;
 
-            // keep the super class reference
-            child.__super = parent.prototype;
+            // keep the reference to the parent prototype
+            child.__super__ = parent.prototype;
 
             return child;
         },
 
         /**
-         * isFn function.
+         * Return true if the parameter is a function.
          *
-         * @param {function} fn A function.
-         * @return {boolean} True if fn is a function.
+         * @param {mixed} o An object.
+         * @return {boolean}
          */
-        isFn: function (fn) {
-            return typeof fn === 'function';
+        isFn: function (o) {
+            return typeof o === 'function';
         },
 
         /**
-         * hasSuperCall function.
+         * Return true if the param is a function which contains parent method call.
          *
-         * @param {function} fn A function.
-         * @return {boolean} True if fn is a function which has the parent method call.
+         * @param {mixed} fn A function.
+         * @return {boolean}
          */
         hasFnSuperCall: function (fn) {
             return this.isFn(fn) && fn.toString().indexOf('.super') !== -1;
@@ -171,17 +174,17 @@
      *
      * @example Call a parent method.
      * - this.super();
-     * - SomeClass.__super.someParentMethod.apply(this, arguments);
+     * - SomeClass.__super__.someParentMethod.apply(this, arguments);
      */
     G.Class = {
-        /** 
+        /**
          * Create a class.
          * Parameters can be as follows:
          *   - parent is a parent class
          *   - props is an object which contains class properties
          *   - staticProps is an object which contains static class properties
          *
-         * @param {function|object|null} The parameter can be parent or props or null. 
+         * @param {function|object|null} The parameter can be parent or props or null.
          * @param {object} The parameter is props (optional).
          * @param {object} The parameter is staticProps (optional).
          * @return {function} A function which can be used as a class.
@@ -206,7 +209,7 @@
             parent && Helper.inherit(parent, Class);
 
             // add properties
-            props && Helper.extend(Class.prototype, props, Class.__super);
+            props && Helper.extend(Class.prototype, props, Class.__super__);
 
             // add static properties
             staticProps && Helper.extend(Class, staticProps);

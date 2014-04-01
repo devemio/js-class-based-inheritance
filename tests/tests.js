@@ -1,3 +1,16 @@
+var isDefined = function (o) {
+    return typeof o !== 'undefined';
+}
+
+var isFn = function (o) {
+    return typeof o === 'function';
+}
+
+var isObj = function (o) {
+    return typeof o === 'object';
+}
+
+
 /**
  * Module: arguments.
  */
@@ -9,12 +22,12 @@ module('arguments', {
          */
         this.checkInstanceAndClassInGeneral = function (A, a) {
             // type
-            strictEqual(typeof A, 'function', 'type of A is a function');
-            strictEqual(typeof a, 'object', 'type of a is an object');
+            ok(isFn(A), 'type of A is a function');
+            ok(isObj(a), 'type of a is an object');
 
             // init()
-            strictEqual(typeof a.init, 'function', 'a has the init function');
-            strictEqual(typeof A.prototype.init, 'function', 'prototype of A has the init function');
+            ok(isFn(a.init), 'a has the init function');
+            ok(isFn(A.prototype.init), 'function', 'prototype of A has the init function');
 
             // constructor
             strictEqual(a.constructor, A, 'constructor of a is A');
@@ -22,57 +35,53 @@ module('arguments', {
         }
     }
 });
-test('Class.create() without arguments', function () {
+test('create a class without arguments', function () {
     var A = Class.create(),
         a = new A();
-
     this.checkInstanceAndClassInGeneral(A, a);
 });
-test('Class.create() with properties', function () {
+test('create a class with properties', function () {
     var A = Class.create({
         prop: 1
     });
     var a = new A();
-
     this.checkInstanceAndClassInGeneral(A, a);
 
     // prop
-    notStrictEqual(typeof a.prop, 'undefined', 'a has prop');
-    strictEqual(typeof A.prop, 'undefined', 'A has not prop');
-    strictEqual(a.prop, 1, 'a.prop has correct value');
+    ok(isDefined(a.prop), 'a has prop');
+    ok(!isDefined(A.prop), 'A has not prop');
+    equal(a.prop, 1, 'a.prop has correct value');
 });
-test('Class.create() with static properties', function () {
+test('create a class with static properties', function () {
     var A = Class.create({}, {
         staticProp: 1
     });
     var a = new A();
-
     this.checkInstanceAndClassInGeneral(A, a);
 
     // static prop
-    strictEqual(typeof a.staticProp, 'undefined', 'a has not static prop');
-    notStrictEqual(typeof A.staticProp, 'undefined', 'A has static prop');
-    strictEqual(A.staticProp, 1, 'A.staticProp has correct value');
+    ok(!isDefined(a.staticProp), 'a has not static prop');
+    ok(isDefined(A.staticProp), 'A has static prop');
+    equal(A.staticProp, 1, 'A.staticProp has correct value');
 });
-test('Class.create() with properties and static properties', function () {
+test('create a class with properties and static properties', function () {
     var A = Class.create({
         prop: 1
     }, {
         staticProp: 2
     });
     var a = new A();
-
     this.checkInstanceAndClassInGeneral(A, a);
 
     // prop
-    notStrictEqual(typeof a.prop, 'undefined', 'a has prop');
-    strictEqual(typeof A.prop, 'undefined', 'A has not prop');
-    strictEqual(a.prop, 1, 'a.prop has correct value');
+    ok(isDefined(a.prop), 'a has prop');
+    ok(!isDefined(A.prop), 'A has not prop');
+    equal(a.prop, 1, 'a.prop has correct value');
 
     // static prop
-    strictEqual(typeof a.staticProp, 'undefined', 'a has not static prop');
-    notStrictEqual(typeof A.staticProp, 'undefined', 'A has static prop');
-    strictEqual(A.staticProp, 2, 'A.staticProp has correct value');
+    ok(!isDefined(a.staticProp), 'a has not static prop');
+    ok(isDefined(A.staticProp), 'A has static prop');
+    equal(A.staticProp, 2, 'A.staticProp has correct value');
 });
 
 /**
@@ -86,8 +95,8 @@ test('inheritance of properties', function () {
     var B = Class.create(A);
     var b = new B();
 
-    ok(b.prop == 100);
-    strictEqual(typeof B.prop, 'undefined');
+    equal(b.prop, 100);
+    ok(!isDefined(B.prop));
 });
 test('inheritance of methods', function () {
     var A = Class.create({
@@ -99,6 +108,6 @@ test('inheritance of methods', function () {
     var B = Class.create(A);
     var b = new B();
 
-    ok(b.getProps() == 100);
-    strictEqual(typeof B.getProps, 'undefined');
+    equal(b.getProps(), 100);
+    ok(!isDefined(B.getProps));
 });
