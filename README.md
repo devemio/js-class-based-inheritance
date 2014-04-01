@@ -4,21 +4,16 @@ Here is a library allows to use class-based model in javascript.
 ## Usage
 ```javascript
 // namespace
-var Shape = {};
+var Person = {};
 
 /** @constructor */
-Shape.Base = Class.create({
-    /** @private */
+Person.Base = Class.create({
+    /** @var */
     name: '',
 
     /** @override */
-    init: function () {
+    init: function (name) {
         // configure
-        this.setName('shape');
-    },
-
-    /** @final */
-    setName: function (name) {
         this.name = name;
     },
 
@@ -27,31 +22,48 @@ Shape.Base = Class.create({
         return this.name;
     },
 
-    draw: function () {
+    sayName: function () {
         // abstract
     }
 });
 
 /** 
  * @constructor 
- * @extends Shape.Base
+ * @extends Person.Base
  */
-Shape.Circle = Class.create(Shape.Base, {
+Person.Woman = Class.create(Person.Base, {
     /** @override */
-    init: function () {
+    init: function (name) {
         // call parent constructor
-        this.super();
-
-        // configure
-        this.setName('circle');
+        this.super(name + ' (woman)');
     },
 
     /** @override */
-    draw: function () {
-        console.log('A ' + this.getName() + ' was drawn');
+    sayName: function () {
+        alert('My name is ' + this.getName() + '.');
     }
 });
 
-var circle = new Shape.Circle();
-circle.draw();
+/** 
+ * @constructor 
+ * @extends Person.Base
+ */
+Person.Man = Class.create(Person.Base, {
+    /** @override */
+    init: function (name) {
+        // call parent constructor
+        this.super(name + ' (man)');
+    },
+
+    /** @override */
+    sayName: function () {
+        alert('My name is ' + this.getName() + '. I like rock music.');
+    }
+});
+
+var john = new Person.Man('John');
+john.sayName();
+
+var aline = new Person.Woman('Aline');
+aline.sayName();
 ```
