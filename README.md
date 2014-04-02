@@ -35,13 +35,16 @@ Person.Woman = Class.create(Person.Base, {
     /** @override */
     init: function (name) {
         // call parent constructor
-        this.super(name + ' (woman)');
+        this.super(name + ' (' + Person.Woman.TYPE + ')');
     },
 
     /** @override */
     sayName: function () {
         alert('My name is ' + this.getName() + '.');
     }
+}, {
+    // static property
+    TYPE: 'woman'
 });
 
 /** 
@@ -52,13 +55,16 @@ Person.Man = Class.create(Person.Base, {
     /** @override */
     init: function (name) {
         // call parent constructor
-        this.super(name + ' (man)');
+        this.super(name + ' (' + Person.Man.TYPE + ')');
     },
 
     /** @override */
     sayName: function () {
         alert('My name is ' + this.getName() + '. I like rock music.');
     }
+}, {
+    // static property
+    TYPE: 'man'
 });
 
 var john = new Person.Man('John');
