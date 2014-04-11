@@ -18,7 +18,7 @@ Person.Base = Class.create({
     },
 
     /** @final */
-    getName: function (name) {
+    getName: function () {
         return this.name;
     },
 
